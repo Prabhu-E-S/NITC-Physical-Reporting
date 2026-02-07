@@ -49,10 +49,11 @@
     <script>
             (function () {
                 const savedTheme = localStorage.getItem("nitc-theme");
-                const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-                const isDark = savedTheme ? savedTheme === "dark" : prefersDark;
-                document.documentElement.classList.toggle("dark", isDark);
-                document.documentElement.classList.toggle("light", !isDark);
+                // if (savedTheme === "dark" || savedTheme === "light") {
+                //     const isDark = savedTheme === "dark";
+                //     document.documentElement.classList.toggle("dark", isDark);
+                //     document.documentElement.classList.toggle("light", !isDark);
+                // }
             })();
     </script>
 </head>
@@ -91,9 +92,7 @@
                             data-alt="Student profile headshot portrait"
                             src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9SxfTjZOVUNdbMr4heOy4VGSbXFfWG4wzZTFQA5fauLv8D0h3Sk3LxbSCbumqjHTeNm9cTn3l72tOAraC1jvywJ_BJj49-IWJ4hq8Q6rU2lFoVhyHkylh2LITDl14eFUSSJo6ME9aZnoKIwpWXSMMw8PEZ2_HshPTMIOWu-p4e0_JhtpJpr0RSrSR8v3Ca4QDxCwDQxkSy-9viQD_c4K_TSkDyPmfBSGraU1qxm7j6ZrLs5hK12R_EY69e5eocHXbJm4Ozay8GwZP" />
                     </div>
-                    <button class="p-2 text-slate-400 hover:text-red-500 transition-colors">
-                        <span class="material-symbols-outlined">logout</span>
-                    </button>
+                    <div data-settings-mount></div>
                 </div>
             </div>
         </header>
@@ -204,11 +203,7 @@
                                     <p class="font-bold text-slate-900 dark:text-slate-100">Aug 24: Late Reporting</p>
                                     <p class="text-sm text-slate-500 mb-2">Final window for late arrivals with verified
                                         justification.</p>
-                                    <div
-                                        class="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/10 text-amber-600 rounded-full text-[10px] font-bold">
-                                        <span class="material-symbols-outlined text-xs">calculate</span>
-                                        ELIGIBILITY: 5x + 15y &lt; 45
-                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -266,24 +261,26 @@
                             <div class="flex justify-between gap-4 mb-8">
                                 <div
                                     class="flex-1 text-center p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-100 dark:border-slate-700">
-                                    <div class="text-xl font-bold text-primary">05</div>
+                                    <div id="hours" class="text-xl font-bold text-primary">00</div>
                                     <div class="text-[10px] uppercase font-bold text-slate-400">Hours</div>
+
                                 </div>
                                 <div
                                     class="flex-1 text-center p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-100 dark:border-slate-700">
-                                    <div class="text-xl font-bold text-primary">32</div>
+                                    <div id="mins" class="text-xl font-bold text-primary">00</div>
                                     <div class="text-[10px] uppercase font-bold text-slate-400">Mins</div>
                                 </div>
                                 <div
                                     class="flex-1 text-center p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-100 dark:border-slate-700">
-                                    <div class="text-xl font-bold text-primary">15</div>
+                                    <div id="secs" class="text-xl font-bold text-primary">00</div>
                                     <div class="text-[10px] uppercase font-bold text-slate-400">Secs</div>
                                 </div>
                             </div>
                             <div class="space-y-4">
-                                <button
+                                <button id="bookBtn"
                                     class="w-full bg-slate-200 dark:bg-slate-800 text-slate-500 font-bold py-4 rounded-lg flex items-center justify-center gap-2 cursor-not-allowed transition-all"
-                                    disabled="">
+                                    disabled>
+
                                     <span class="material-symbols-outlined">schedule</span>
                                     Wait for 5:00 PM
                                 </button>
@@ -342,7 +339,7 @@
             <div class="max-w-[1280px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
                 <div class="flex flex-col items-center md:items-start">
                     <p class="text-sm font-bold opacity-80">NIT Calicut Admissions Office</p>
-                    <p class="text-xs text-slate-500">© 2024 National Institute of Technology Calicut. All Rights
+                    <p class="text-xs text-slate-500">©️ 2024 National Institute of Technology Calicut. All Rights
                         Reserved.</p>
                 </div>
                 <div class="flex gap-8">
@@ -363,10 +360,11 @@
     <script>
         window.APP_CONFIG = {
             enableBackend: false,
-            backendBaseUrl: ""
+            backendBaseUrl: "",
         };
+
     </script>
-    <script src="site.js"></script>
+    <script src="{{ url_for('static', filename='site.js') }}"></script>
     <script>
 
         const email = "{{ email }}";
@@ -397,6 +395,81 @@
         }
 
     </script>
+    <script>
+
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const hoursEl = document.getElementById("hours");
+            const minsEl = document.getElementById("mins");
+            const secsEl = document.getElementById("secs");
+            const btn = document.getElementById("bookBtn");
+
+            // 👉 Change for testing
+            const bookingHour = 18; // 5PM
+
+            
+            function enableBooking() {
+                btn.disabled = false;
+                btn.innerHTML = "Book Token Now";
+
+                btn.classList.remove(
+                    "cursor-not-allowed",
+                    "text-slate-500",
+                    "bg-slate-200",
+                    "dark:bg-slate-800"
+                );
+
+                btn.classList.add(
+                    "bg-orange-500",
+                    "hover:bg-orange-600",
+                    "text-white",
+                    "cursor-pointer"
+                );
+
+                localStorage.setItem("bookingOpen", "true");
+            }
+
+            function updateTimer() {
+
+                const now = new Date();
+                const target = new Date();
+                target.setHours(bookingHour, 18, 0, 0);
+
+                const diff = target - now;
+
+                if (diff <= 0) {
+                    enableBooking();
+                    return;
+                }
+
+                const h = Math.floor(diff / 3600000);
+                const m = Math.floor((diff % 3600000) / 60000);
+                const s = Math.floor((diff % 60000) / 1000);
+
+                hoursEl.innerText = String(h).padStart(2, '0');
+                minsEl.innerText = String(m).padStart(2, '0');
+                secsEl.innerText = String(s).padStart(2, '0');
+            }
+
+            // Persist state
+            if (localStorage.getItem("bookingOpen") === "true") {
+                enableBooking();
+            } else {
+                updateTimer();
+                setInterval(updateTimer, 1000);
+            }
+
+            btn.onclick = () => {
+                if (!btn.disabled) {
+                    window.location.href = "/book-token.html";
+                }
+            }
+
+        });
+    </script>
+
+
+
 
 
 </body>

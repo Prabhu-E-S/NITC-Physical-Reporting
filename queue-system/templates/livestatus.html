@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Live Schedule &amp; Token Status - NITC Physical Reporting</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700;800&amp;family=Noto+Sans:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700;0..1&amp;display=swap" rel="stylesheet"/>
+<link href="styles/livestatus.css" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#137fec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+  <script>
+    (function () {
+      const savedTheme = localStorage.getItem("nitc-theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const isDark = savedTheme ? savedTheme === "dark" : prefersDark;
+      document.documentElement.classList.toggle("dark", isDark);
+      document.documentElement.classList.toggle("light", !isDark);
+    })();
+  </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#0d141b] dark:text-slate-50 min-h-screen flex flex-col overflow-x-hidden" data-student-name="Arun Krishna" data-student-roll-no="B22CS001">
+<header class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between px-4 sm:px-8 py-4 bg-white dark:bg-slate-900 border-b border-[#e7edf3] dark:border-slate-800 shadow-sm">
+<div class="flex items-center gap-4">
+<div class="p-2 bg-primary rounded-lg text-white">
+<span class="material-symbols-outlined text-3xl">account_balance</span>
+</div>
+<div>
+<h1 class="text-2xl font-extrabold tracking-tight">NITC Physical Reporting</h1>
+<p class="text-sm font-medium text-primary uppercase tracking-widest flex items-center gap-2">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+                Live Schedule &amp; Token Status
+            </p>
+</div>
+</div>
+<div class="flex flex-wrap gap-3 sm:gap-6">
+<div class="flex flex-col items-center px-6 border-r border-slate-200 dark:border-slate-800">
+<span class="text-xs font-bold text-slate-500 uppercase">Scheduled Date</span>
+<span class="text-xl font-bold">20-08-2026</span>
+</div>
+<div class="flex flex-col items-end px-6 border-r border-slate-200 dark:border-slate-800">
+<span class="text-3xl font-bold">10:45 AM</span>
+<span class="text-xs font-semibold text-slate-500 uppercase tracking-tighter">Thursday, Aug 20</span>
+</div>
+<div class="flex items-center gap-2 px-2">
+<div class="flex flex-col items-center justify-center bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-4 py-2 rounded-lg">
+<span class="text-xs font-bold uppercase">Hall Capacity</span>
+<span class="text-lg font-bold">64%</span>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 flex flex-col xl:flex-row overflow-auto p-4 sm:p-6 gap-6">
+<section class="flex-[3] flex flex-col gap-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-white dark:bg-slate-900 rounded-xl border-2 border-primary shadow-xl flex flex-col overflow-hidden">
+<div class="bg-primary px-6 py-3 flex justify-between items-center text-white">
+<div class="flex flex-col">
+<span class="text-xs font-bold uppercase opacity-80">Now Processing Branch</span>
+<span class="text-lg font-bold uppercase tracking-wider">Computer Science</span>
+</div>
+<span class="material-symbols-outlined text-3xl">computer</span>
+</div>
+<div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
+<span class="text-slate-500 dark:text-slate-400 text-xl font-medium uppercase tracking-widest mb-2">Token Number</span>
+<div class="text-6xl sm:text-8xl lg:text-[120px] font-black leading-none text-primary mb-4">CS-402</div>
+<div class="bg-slate-100 dark:bg-slate-800 px-4 sm:px-8 py-3 rounded-full">
+<span class="text-2xl font-bold text-slate-700 dark:text-slate-300">Proceed to Counter 1</span>
+</div>
+</div>
+<div class="border-t border-[#e7edf3] dark:border-slate-800 p-4 grid grid-cols-1 sm:grid-cols-2 bg-slate-50/50 dark:bg-slate-800/20 gap-2 sm:gap-0">
+<div class="flex flex-col items-center border-r border-[#e7edf3] dark:border-slate-800">
+<span class="text-xs font-bold text-slate-500 uppercase mb-1">Current Hour Range</span>
+<span class="text-2xl font-bold text-primary">400 - 450</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="text-xs font-bold text-slate-500 uppercase mb-1">Wait Time</span>
+<span class="text-2xl font-bold text-green-600">~8 Mins</span>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-[#cfdbe7] dark:border-slate-800 shadow-xl flex flex-col overflow-hidden">
+<div class="bg-slate-800 px-6 py-3 flex justify-between items-center text-white">
+<div class="flex flex-col">
+<span class="text-xs font-bold uppercase opacity-80">Now Processing Branch</span>
+<span class="text-lg font-bold uppercase tracking-wider">Architecture</span>
+</div>
+<span class="material-symbols-outlined text-3xl">architecture</span>
+</div>
+<div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
+<span class="text-slate-500 dark:text-slate-400 text-xl font-medium uppercase tracking-widest mb-2">Token Number</span>
+<div class="text-6xl sm:text-8xl lg:text-[120px] font-black leading-none text-slate-800 dark:text-slate-100 mb-4">AR-385</div>
+<div class="bg-slate-100 dark:bg-slate-800 px-4 sm:px-8 py-3 rounded-full">
+<span class="text-2xl font-bold text-slate-700 dark:text-slate-300">Proceed to Counter 4</span>
+</div>
+</div>
+<div class="border-t border-[#e7edf3] dark:border-slate-800 p-4 grid grid-cols-1 sm:grid-cols-2 bg-slate-50/50 dark:bg-slate-800/20 gap-2 sm:gap-0">
+<div class="flex flex-col items-center border-r border-[#e7edf3] dark:border-slate-800">
+<span class="text-xs font-bold text-slate-500 uppercase mb-1">Current Hour Range</span>
+<span class="text-2xl font-bold text-slate-700 dark:text-slate-300">380 - 420</span>
+</div>
+<div class="flex flex-col items-center">
+<span class="text-xs font-bold text-slate-500 uppercase mb-1">Wait Time</span>
+<span class="text-2xl font-bold text-orange-500">~28 Mins</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-[#cfdbe7] dark:border-slate-800 shadow-md flex-1 flex flex-col overflow-hidden">
+<div class="px-6 py-4 border-b border-[#cfdbe7] dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
+<h2 class="text-xl font-bold flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">list_alt</span>
+                    Upcoming Tokens &amp; Schedule
+                </h2>
+<span class="text-sm font-medium text-slate-500">Auto-optimized every 60s</span>
+</div>
+<div class="flex-1 overflow-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-800/30 text-slate-500 dark:text-slate-400 uppercase text-xs font-bold tracking-widest">
+<th class="px-4 sm:px-8 py-4 border-b border-[#cfdbe7] dark:border-slate-800">Branch &amp; Service</th>
+<th class="px-4 sm:px-8 py-4 border-b border-[#cfdbe7] dark:border-slate-800 text-center">Next in Queue</th>
+<th class="px-4 sm:px-8 py-4 border-b border-[#cfdbe7] dark:border-slate-800 text-right">Hour Window</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#cfdbe7] dark:divide-slate-800">
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+<td class="px-4 sm:px-8 py-6">
+<div class="font-bold text-lg">Computer Science</div>
+<div class="text-sm text-slate-500">B.Tech - Quick Verification</div>
+</td>
+<td class="px-4 sm:px-8 py-6 text-center">
+<div class="flex justify-center gap-3">
+<span class="px-4 py-2 bg-primary/10 text-primary rounded-lg font-bold text-xl">403</span>
+<span class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg font-bold text-xl">404</span>
+<span class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg font-bold text-xl">405</span>
+</div>
+</td>
+<td class="px-4 sm:px-8 py-6 text-right">
+<span class="text-lg font-bold text-primary">10:00 - 11:00 AM</span>
+</td>
+</tr>
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+<td class="px-4 sm:px-8 py-6">
+<div class="font-bold text-lg">Architecture</div>
+<div class="text-sm text-slate-500">B.Arch - Portfolio Review</div>
+</td>
+<td class="px-4 sm:px-8 py-6 text-center">
+<div class="flex justify-center gap-3">
+<span class="px-4 py-2 bg-primary/10 text-primary rounded-lg font-bold text-xl">386</span>
+<span class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg font-bold text-xl">387</span>
+<span class="px-4 py-2 bg-slate-100 dark:bg-slate-800 rounded-lg font-bold text-xl">388</span>
+</div>
+</td>
+<td class="px-4 sm:px-8 py-6 text-right">
+<span class="text-lg font-bold text-slate-700 dark:text-slate-300">10:00 - 11:30 AM</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<aside class="flex-1 flex flex-col gap-6">
+<div class="bg-amber-50 dark:bg-amber-900/10 border-2 border-amber-500/50 rounded-xl p-6 shadow-md">
+<div class="flex items-center gap-2 mb-4 text-amber-700 dark:text-amber-400">
+<span class="material-symbols-outlined font-bold">event_busy</span>
+<h3 class="text-xl font-bold uppercase tracking-tight">Late Reporting</h3>
+</div>
+<p class="text-sm text-amber-800 dark:text-amber-300 mb-4 font-medium">Available slots for students who missed reporting on 19-08-2026:</p>
+<div class="space-y-3">
+<div class="flex justify-between items-center bg-white dark:bg-slate-800 p-3 rounded-lg border border-amber-200 dark:border-amber-900/50 shadow-sm">
+<span class="font-bold">Electronics</span>
+<span class="bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 px-2 py-1 rounded text-xs font-black">2 SLOTS</span>
+</div>
+<div class="flex justify-between items-center bg-white dark:bg-slate-800 p-3 rounded-lg border border-amber-200 dark:border-amber-900/50 shadow-sm opacity-60">
+<span class="font-bold text-slate-400">Civil Engg.</span>
+<span class="bg-slate-100 dark:bg-slate-700 text-slate-400 px-2 py-1 rounded text-xs font-black uppercase">Full</span>
+</div>
+<div class="flex justify-between items-center bg-white dark:bg-slate-800 p-3 rounded-lg border border-amber-200 dark:border-amber-900/50 shadow-sm">
+<span class="font-bold">Chemical</span>
+<span class="bg-amber-100 dark:bg-amber-900 text-amber-800 dark:text-amber-200 px-2 py-1 rounded text-xs font-black">1 SLOT</span>
+</div>
+</div>
+<p class="mt-4 text-[10px] uppercase font-bold text-amber-600 dark:text-amber-500 text-center tracking-widest">Report to Desk 0 at 1:00 PM</p>
+</div>
+<div class="bg-primary rounded-xl p-6 text-white shadow-xl flex-1 flex flex-col">
+<h3 class="text-xl font-bold mb-6 flex items-center gap-3">
+<span class="material-symbols-outlined">help_center</span>
+                Next Steps
+            </h3>
+<div class="space-y-6 flex-1">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0 font-bold">1</div>
+<div>
+<p class="font-bold text-lg mb-0.5">Keep ID Ready</p>
+<p class="text-white/80 text-sm">Rank Card and Admission Letter.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0 font-bold">2</div>
+<div>
+<p class="font-bold text-lg mb-0.5">Verification</p>
+<p class="text-white/80 text-sm">Original certificates only.</p>
+</div>
+</div>
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center shrink-0 font-bold">3</div>
+<div>
+<p class="font-bold text-lg mb-0.5">Biometric</p>
+<p class="text-white/80 text-sm">Proceed after token call.</p>
+</div>
+</div>
+</div>
+<div class="mt-4 bg-white/10 p-4 rounded-lg border border-white/20">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-2xl">wifi</span>
+<div class="font-bold text-sm leading-tight">Student Wi-Fi</div>
+</div>
+<p class="text-white/70 text-[10px]">SSID: <strong>NITC-REPORTING</strong><br/>Login with App Number</p>
+</div>
+</div>
+<div class="bg-orange-500 rounded-xl p-4 text-white shadow-lg flex items-center gap-4">
+<span class="material-symbols-outlined text-4xl animate-pulse">campaign</span>
+<div>
+<h4 class="font-bold text-sm leading-tight uppercase">Batch Notice</h4>
+<p class="text-xs opacity-90 font-medium">Mechanical (ME) reporting window shifted to 2:00 PM today.</p>
+</div>
+</div>
+</aside>
+</main>
+<footer class="bg-slate-900 text-white h-12 flex items-center overflow-hidden border-t-4 border-primary">
+<div class="whitespace-nowrap flex items-center px-4">
+<span class="bg-primary px-3 py-1 rounded text-xs font-black uppercase tracking-widest mr-4 shrink-0">News Alert</span>
+<div class="flex gap-20 animate-marquee items-center text-sm font-medium">
+<span>Welcome to NITC Physical Reporting 2026. Schedule for 20-08-2026 is strictly followed.</span>
+<span>Late Reporting students must register at Desk 0 before 12:30 PM.</span>
+<span>Computer Science (CS) token window 400-450 ends at 11:15 AM.</span>
+<span>Architecture (AR) slots are running on time. Next batch starts at 11:30 AM.</span>
+</div>
+</div>
+</footer>
+
+  <script>
+    window.APP_CONFIG = {
+      enableBackend: false,
+      backendBaseUrl: ""
+    };
+  </script>
+  <script src="/static/site.js"></script>
+</body></html>
