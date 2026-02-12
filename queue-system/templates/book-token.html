@@ -109,6 +109,11 @@
                     <span class="material-symbols-outlined text-sm"></span>
                     <span>Complete each step to generate your reporting token</span>
                 </div>
+                {% if existing_booking %}
+                <div class="mt-4 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-amber-800 text-sm">
+                    You already booked slot <strong>{{ existing_booking.slot_time }}</strong> with token <strong>{{ existing_booking.token_id }}</strong>. Re-booking is not allowed.
+                </div>
+                {% endif %}
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -242,7 +247,7 @@
             <div class="max-w-[1280px] mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
                 <div class="flex flex-col items-center md:items-start">
                     <p class="text-sm font-bold opacity-80">NIT Calicut Admissions Office</p>
-                    <p class="text-xs text-slate-500">© 2024 National Institute of Technology Calicut. All Rights
+                    <p class="text-xs text-slate-500">©️ 2024 National Institute of Technology Calicut. All Rights
                         Reserved.</p>
                 </div>
                 <div class="flex gap-8">
@@ -289,6 +294,8 @@
     </script>
     <script>
         const email = "{{ email }}";
+        const slotMeta = {{ slots|tojson }};
+        const existingBooking = {{ existing_booking|tojson }};
         let selectedSlot = "";
 
         function formatHour(hour) {
@@ -298,29 +305,40 @@
             return (hour - 12) + ":00 PM";
         }
 
-        function renderSlots() {
-            const slotGrid = document.getElementById("slotGrid");
-            const slotMeta = [
-                { seats: 12 }, { seats: 10 }, { seats: 8 }, { seats: 6 },
-                { seats: 5 }, { seats: 3 }, { seats: 2 }, { seats: 1 }
-            ];
+        function requiredCapacityForFee(feeValue) {
+            return feeValue === "no" ? 2 : 1;
+        }
 
+        function renderSlots(feeValue = "") {
+            const slotGrid = document.getElementById("slotGrid");
+            const neededCapacity = requiredCapacityForFee(feeValue);
             let html = "";
-            for (let i = 0; i < 8; i += 1) {
-                const start = 9 + i;
-                const end = 10 + i;
-                const slotText = formatHour(start) + " - " + formatHour(end);
-                const seats = slotMeta[i].seats;
+            for (let i = 0; i < slotMeta.length; i += 1) {
+                const slotText = slotMeta[i].time;
+                const seats = slotMeta[i].capacity;
+                const isFull = seats < neededCapacity;
+                if (isFull && selectedSlot === slotText) {
+                    selectedSlot = "";
+                }
+                const statusText = isFull
+                    ? (feeValue === "no" ? `Need 2 tokens (only ${seats} left)` : "No seats left")
+                    : (seats + " seats left");
 
                 html += `
-                    <button type="button" class="slot-card text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-primary transition" data-slot="${slotText}">
+                    <button type="button" class="slot-card text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-primary transition ${isFull ? "opacity-60 cursor-not-allowed" : ""}" data-slot="${slotText}" ${isFull ? "disabled" : ""}>
                         <p class="font-bold">${slotText}</p>
-                        <p class="text-xs ${seats > 3 ? "text-emerald-600" : "text-amber-600"}">${seats} seats left</p>
+                        <p class="text-xs ${isFull ? "text-red-600" : (seats > 3 ? "text-emerald-600" : "text-amber-600")}">${statusText}</p>
                     </button>
                 `;
             }
 
             slotGrid.innerHTML = html;
+            if (selectedSlot) {
+                const selectedCard = slotGrid.querySelector(`[data-slot="${selectedSlot}"]`);
+                if (selectedCard) {
+                    selectedCard.classList.add("selected");
+                }
+            }
         }
 
         function updatePaymentModeVisibility(feeValue) {
@@ -367,9 +385,11 @@
             const paidReceiptDone = !!document.getElementById("paidReceiptUpload").files.length;
             const feeStepDone = feePaid ? paidReceiptDone : (feePicked && unpaidModeDone);
             const docsDone = !!document.getElementById("docClass10").files.length && !!document.getElementById("docClass12").files.length;
-            const slotDone = !!selectedSlot;
 
             updatePaymentModeVisibility(feeValue);
+            renderSlots(feeValue);
+            bindSlotSelection();
+            const slotDone = !!selectedSlot;
 
             let done = 0;
             if (feeStepDone) done += 1;
@@ -448,37 +468,124 @@
         //     // alert("Token booked successfully for " + selectedSlot + "!");
         // });
 
+        // document.getElementById("submitBooking").addEventListener("click", async () => {
+
+        //     const feeValue = document.querySelector('input[name="fee"]:checked')?.value;
+        //     const paymentMode = document.querySelector('input[name="unpaidMode"]:checked')?.value || "";
+
+        //     if (!selectedSlot) {
+        //         alert("Select slot");
+        //         return;
+        //     }
+
+        //     const res = await fetch("/submit-booking", {
+        //         method: "POST",
+        //         headers: { "Content-Type": "application/json" },
+        //         body: JSON.stringify({
+        //             slot: selectedSlot,
+        //             fee: feeValue,
+        //             payment: paymentMode
+        //         })
+        //     });
+
+        //     const data = await res.json();
+
+        //     if (data.success) {
+        //         window.location = data.redirect;
+        //     }
+        // });
+
         document.getElementById("submitBooking").addEventListener("click", async () => {
-
-            const feeValue = document.querySelector('input[name="fee"]:checked')?.value;
-            const paymentMode = document.querySelector('input[name="unpaidMode"]:checked')?.value || "";
-
-            if (!selectedSlot) {
-                alert("Select slot");
+            if (existingBooking) {
+                alert("You already booked a slot and cannot book again.");
                 return;
             }
 
+            const feeValue = document.querySelector('input[name="fee"]:checked')?.value || "";
+            const feePicked = feeValue !== "";
+            const feePaid = feeValue === "yes";
+
+            const unpaidMode = document.querySelector('input[name="unpaidMode"]:checked')?.value || "";
+            const paidReceiptDone = !!document.getElementById("paidReceiptUpload").files.length;
+
+            const docsDone =
+                !!document.getElementById("docClass10").files.length &&
+                !!document.getElementById("docClass12").files.length;
+
+            const slotDone = !!selectedSlot;
+
+            // -------- VALIDATIONS --------
+
+            if (!feePicked) {
+                alert("Please select fee status first.");
+                return;
+            }
+
+            if (feePaid && !paidReceiptDone) {
+                alert("Please upload the fee receipt.");
+                return;
+            }
+
+            if (!feePaid && !unpaidMode) {
+                alert("Please select payment mode: On Spot Payment or Education Loan.");
+                return;
+            }
+
+            if (!docsDone) {
+                alert("Upload Class 10 and Class 12 documents.");
+                return;
+            }
+
+            if (!slotDone) {
+                alert("Please select a time slot.");
+                return;
+            }
+
+            // -------- SEND TO BACKEND --------
+
             const res = await fetch("/submit-booking", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    slot: selectedSlot,
-                    fee: feeValue,
-                    payment: paymentMode
-                })
+                body: (() => {
+                    const fd = new FormData();
+                    fd.append("slot", selectedSlot);
+                    fd.append("fee", feeValue);
+                    fd.append("payment", unpaidMode);
+                    fd.append("docClass10", document.getElementById("docClass10").files[0]);
+                    fd.append("docClass12", document.getElementById("docClass12").files[0]);
+                    const catDoc = document.getElementById("docCategory").files[0];
+                    if (catDoc) {
+                        fd.append("docCategory", catDoc);
+                    }
+                    const receipt = document.getElementById("paidReceiptUpload").files[0];
+                    if (receipt) {
+                        fd.append("paidReceipt", receipt);
+                    }
+                    return fd;
+                })()
             });
 
             const data = await res.json();
 
-            if (data.success) {
-                window.location = data.redirect;
+            // -------- HANDLE RESPONSE --------
+
+            if (!data.success) {
+                alert(data.message || "Booking failed");
+                return;
             }
+
+            // SUCCESS
+            window.location.href = data.redirect;
         });
+
 
 
         renderSlots();
         bindSlotSelection();
         updateProgress();
+        if (existingBooking) {
+            document.getElementById("submitBooking").disabled = true;
+            document.getElementById("submitBooking").classList.add("opacity-60", "cursor-not-allowed");
+        }
     </script>
 </body>
 

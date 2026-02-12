@@ -2,6 +2,7 @@
   const THEME_KEY = "nitc-theme";
   const PROFILE_KEY = "nitc-student-profile";
   const AUTH_TOKEN_KEY = "nitc-auth-token";
+  const ADMIN_HALL_ROLE_KEY = "nitc-admin-hall-role";
 
   const DEFAULT_CONFIG = {
     enableBackend: true,
@@ -82,6 +83,7 @@
   function clearStudentSession() {
     localStorage.removeItem(PROFILE_KEY);
     localStorage.removeItem(AUTH_TOKEN_KEY);
+    localStorage.removeItem(ADMIN_HALL_ROLE_KEY);
   }
 
   function normalizeProfilePayload(payload) {
@@ -360,7 +362,8 @@
         body: JSON.stringify({
           role: "admin",
           email: payload?.email || payload?.adminId || "",
-          password: payload?.password || ""
+          password: payload?.password || "",
+          hallRole: payload?.hallRole || payload?.hall_role || payload?.hall || ""
         })
       });
     },
@@ -461,6 +464,7 @@
         async () => {
           const email = document.getElementById("admin-id")?.value || "";
           const password = document.getElementById("admin-password")?.value || "";
+          const hallRole = (document.getElementById("hall-role")?.value || "").toLowerCase();
           const config = getConfig();
 
           if (config.enableBackend) {
@@ -470,7 +474,8 @@
               body: JSON.stringify({
                 role: "admin",
                 email,
-                password
+                password,
+                hallRole
               })
             }).then((res) => res.json());
 
@@ -478,12 +483,18 @@
               throw new Error(response?.message || "Invalid admin login");
             }
 
+            if (hallRole) {
+              localStorage.setItem(ADMIN_HALL_ROLE_KEY, hallRole);
+            }
             window.location.href = response.redirect || "admin.html";
             return;
           }
 
+          if (hallRole) {
+            localStorage.setItem(ADMIN_HALL_ROLE_KEY, hallRole);
+          }
           localStorage.setItem(AUTH_TOKEN_KEY, "demo-admin");
-          window.location.href = "admin.html";
+          window.location.href = hallRole === "chanakya" ? "admin2.html" : "admin.html";
         },
         "Signing in..."
       );
@@ -509,9 +520,14 @@
 
   function bindLogout() {
     document.querySelectorAll("[data-action='logout']").forEach((button) => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", async () => {
         clearStudentSession();
-        window.location.href = "login.html";
+        try {
+          await fetch("/logout", { method: "POST" });
+        } catch {
+          // Ignore network/logout API errors and still navigate to login screen.
+        }
+        window.location.href = "/";
       });
     });
   }
