@@ -13,7 +13,7 @@ This document explains the **entire runtime flow** of the current Flask app (`ap
 
 ## 2. End-to-End Master Flowchart
 
-```mermaid
+
 flowchart TD
     A[Open /] --> B{Login role}
 
