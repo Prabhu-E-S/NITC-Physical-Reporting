@@ -15,6 +15,7 @@ This document explains the **entire runtime flow** of the current Flask app (`ap
 
 
 flowchart TD
+
     A[Open /] --> B{Login role}
 
     B -->|Student| C[/login role=student/]
